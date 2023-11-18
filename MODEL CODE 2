@@ -1,0 +1,40 @@
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+
+# Load data
+sensor_data = pd.read_csv('sensor_data.csv')
+maintenance_records = pd.read_csv('maintenance_records.csv')
+
+# Combine data and prepare features
+combined_data = sensor_data.merge(maintenance_records, on='equipment_id')
+features = ['sensor1_reading', 'sensor2_reading', 'sensor3_reading']
+target = 'equipment_failure'
+
+# Split data into training and testing sets
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(combined_data[features], combined_data[target], test_size=0.2)
+
+# Train the logistic regression model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Evaluate model performance
+from sklearn.metrics import accuracy_score
+y_pred = model.predict(X_test)
+accuracy = accuracy_score(y_test, y_pred)
+print("Model accuracy:", accuracy)
+
+# Deploy the model for real-time predictions
+import joblib
+joblib.dump(model, 'equipment_failure_prediction_model.pkl')
+
+# Use the saved model for new predictions
+import pickle
+loaded_model = joblib.load('equipment_failure_prediction_model.pkl')
+new_equipment_data = {
+    'sensor1_reading': 10,
+    'sensor2_reading': 5,
+    'sensor3_reading': 2
+}
+prediction = loaded_model.predict([new_equipment_data])
+print("Equipment failure prediction:", prediction)
