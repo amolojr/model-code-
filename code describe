@@ -1,0 +1,18 @@
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+
+# Load the data
+data = pd.read_csv('equipment_data.csv')
+
+# Separate the features and target variable
+X = data[['feature1', 'feature2', 'feature3']]
+y = data['failure']
+
+# Train the logistic regression model
+model = LogisticRegression()
+model.fit(X, y)
+
+# Predict whether or not a new piece of equipment will fail
+new_equipment_data = pd.DataFrame({'feature1': [5], 'feature2': [10], 'feature3': [2]})
+new_equipment_prediction = model.predict(new_equipment_data)
+print(new_equipment_prediction)cose 
